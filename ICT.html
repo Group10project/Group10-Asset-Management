@@ -1,0 +1,374 @@
+{
+  "name": "ICT",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are an AI assistant for managing University of Zululand asset records. The current date is {{ $json.currentDate }} (use for date references).\nGreet warmly: \"Hello! I’m an asset management assistant for ICT members.\". And tell the how you can help them as an ICT Member.\n\n-As an ICT Member you can:\n\n-View all or filtered asset records.\n\nAdd or update records.\n\n-Capabilities:\n\n-Adding New Records:\n\nWhen the user requests to add a new record of an assigned staff, ask them to provide the following details :\n\n-Asset ID\n-Assigned Staff (full name)\n-Staff Number\n-Department\n-Asset Name\n-Asset Category\n-Issue Date (YYYY-MM-DD)\n-Expected Return Date (YYYY-MM-DD)\n-Condition\n-Maintenance Needed (Yes/No)\n-Notes(Optional)\n-Email Address\n\nOnce all the above details are provided, prepare the data(exact details provided by the user) in structured JSON format and add them in the \"Add or Update\" tool.\n\n-Updating Records:\n\nIf the user requests to update records, use the Asset ID they provide to fetch the records related to them using the View Data tool.\n\nPresent the current record and ask the user which fields they would like to change.\n\nKeep unchanged fields as they are unless specified.\n\n-Escalating an Email via Changes Mail Tool:\n\nWhen new records of an assigned staff have been added, send an email notifying them of the new assignment and include all current asset records related to them. Use the email address they provided.\n\nIf records of an assigned staff have been modified, notify them using the Changes Mail tool about the changes and include their current asset records. Use the email address in their records (retrieved via the View Data tool).",
+          "returnIntermediateSteps": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "ed265d3f-50a0-4eb2-8b8a-37571205e8c0",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        480
+      ],
+      "id": "126202e4-8b5e-4dbb-805d-cb1ea552af21",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y88K59rDumXNRlF4",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        512
+      ],
+      "id": "edb55063-0928-4ae4-a182-d55c74932d87",
+      "name": "memory",
+      "credentials": {
+        "postgres": {
+          "id": "eS58YxOHVqNNrfLe",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "UNIZULU_Assets",
+          "mode": "list",
+          "cachedResultName": "UNIZULU_Assets"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "AssetID": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('AssetID__using_to_match_', ``, 'string') }}",
+            "Assigned Staff": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Assigned_Staff', ``, 'string') }}",
+            "Sfaff Number": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Sfaff_Number', ``, 'string') }}",
+            "Department": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Department', ``, 'string') }}",
+            "Asset Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Asset_Name', ``, 'string') }}",
+            "Asset Category": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Asset_Category', ``, 'string') }}",
+            "Issue Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Date', ``, 'string') }}",
+            "Expected Date Return": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Expected_Date_Return', ``, 'string') }}",
+            "Condition": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Condition', ``, 'string') }}",
+            "Maintenance Needed": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Maintenance_Needed', ``, 'string') }}",
+            "Notes": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Notes', ``, 'string') }}",
+            "Email address": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email_address', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "AssetID"
+          ],
+          "schema": [
+            {
+              "id": "AssetID",
+              "displayName": "AssetID",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Assigned Staff",
+              "displayName": "Assigned Staff",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Sfaff Number",
+              "displayName": "Sfaff Number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Asset Name",
+              "displayName": "Asset Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Asset Category",
+              "displayName": "Asset Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Issue Date",
+              "displayName": "Issue Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Expected Date Return",
+              "displayName": "Expected Date Return",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Condition",
+              "displayName": "Condition",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Maintenance Needed",
+              "displayName": "Maintenance Needed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Email address",
+              "displayName": "Email address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        832,
+        480
+      ],
+      "id": "397efff2-9bc1-421b-806e-a4b85fcd9bef",
+      "name": "Add or Update",
+      "credentials": {
+        "postgres": {
+          "id": "Rq7VTQjtRnPE9i1f",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "UNIZULU_Assets",
+          "mode": "list",
+          "cachedResultName": "UNIZULU_Assets"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        512
+      ],
+      "id": "aaabcdba-dbb3-4bf3-9a2c-fde6c4b184d7",
+      "name": "View Data",
+      "credentials": {
+        "postgres": {
+          "id": "Rq7VTQjtRnPE9i1f",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "This Gmail node is responsible for notifying assigned staff members via email whenever there is a change in the asset management system.\n\nBehavior:\n\nNew Asset Issued\n\nWhen a staff member is issued a new asset, the Gmail node will send an email notification.\n\nThe recipient email address must be taken from the \"Assigned Staff Email\" field in Google Sheets (provided by the staff member when their details were recorded).\n\nRecord Updated\n\nWhen a staff member’s asset record is updated (asset returned, condition changed, maintenance logged, or notes added), send an email notification summarizing the update.\n\nThe recipient must again be the email address provided in their staff details.\n\nNo Email Case\n\nIf no valid email is found in the \"Assigned Staff Email\" field, the workflow should skip the Gmail node and log an error for review.",
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        672,
+        496
+      ],
+      "id": "2d8482fa-51af-4828-b6fc-3693b4cc4cf6",
+      "name": "Changes Mail",
+      "webhookId": "507d7679-970d-41b5-acd4-bcaca9455997",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ExyEqx7NXTHHXw8u",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        0
+      ],
+      "id": "ea251c42-c8ab-415a-b359-40b8c1fde214",
+      "name": "When chat message received",
+      "webhookId": "73738afc-46fb-4890-bb5f-a66ff9a471bb"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add or Update": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "View Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Changes Mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "39ad4eec-31e2-430d-8370-4c9e559ab42a",
+  "meta": {
+    "instanceId": "e1956dd52d477a790d0693b465666b43153a801992ea3123d8664c2cce4dde8d"
+  },
+  "id": "LnEseBKrsuOfzosD",
+  "tags": []
+}
