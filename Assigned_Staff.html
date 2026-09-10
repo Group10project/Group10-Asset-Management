@@ -1,0 +1,196 @@
+{
+  "name": "Assigned Staff",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -368
+      ],
+      "id": "26f5b564-1597-4a4f-b744-c2eaafb4b093",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "y88K59rDumXNRlF4",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -528,
+        -720
+      ],
+      "id": "248208aa-1aa2-4460-9dd6-f810fdc4768a",
+      "name": "When chat message received",
+      "webhookId": "df88cc7f-1af8-403d-a0e8-9290b0044eec"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -320,
+        -352
+      ],
+      "id": "2762e3e5-d12a-456a-9b56-454ec805ffc8",
+      "name": "memory",
+      "credentials": {
+        "postgres": {
+          "id": "eS58YxOHVqNNrfLe",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        -384
+      ],
+      "id": "fbb42861-71d8-48bd-a91a-20adf63f7da5",
+      "name": "Send mail",
+      "webhookId": "4c266737-9ab3-4c8d-8669-e74c718bfbaf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ExyEqx7NXTHHXw8u",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "UNIZULU_Assets",
+          "mode": "list",
+          "cachedResultName": "UNIZULU_Assets"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.6,
+      "position": [
+        -160,
+        -384
+      ],
+      "id": "ec6cbb9d-0af9-4941-9f9b-2688e6ee586c",
+      "name": "View Data",
+      "credentials": {
+        "postgres": {
+          "id": "Rq7VTQjtRnPE9i1f",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an AI assistant for managing University of Zululand asset records . The current date is {{ $json.currentDate }} (use for date references).\nGreet warmly: \"Hello! I’m your asset management assistant for staff members\n\nAssigned Staff:\nWhen the user starts the chat, first ask these details: full name, staff ID, department.\n\nAssigned Staff can:\n\nView records of assets issued to them.\n\nReport a failing device (after troubleshooting).\n\nRequest troubleshooting assistance for a failing device.\n\n\n\nCapabilities:\n\nReport Failing Device & Troubleshooting:\n\nVerify Asset ID: Use the View Data Tool with \"Asset ID\" and confirm the verification by mentioning the asset but the asset should only if it belongs to them. If not found, reply: \"The Asset ID provided does not belong to the institution. Please check the details and try again.\" Stop if not verified.\n\nCollect Problem Description: Ask the user, \"Please describe the problem you are experiencing with this asset.\" Store this description for troubleshooting and escalation emails.\n\nGenerate Troubleshooting Steps: Use the description to provide 2–3 actionable steps. Example: \"For a laptop that crashes, try restarting it, checking for overheating, or running updates.\" End with: \"Please try these steps. If the issue persists, let me know and I can escalate this to the ICT Team.\"\n\nEscalation via Send Mail Tool: If troubleshooting fails and the user confirms, send an email using the Send Mail Tool to mlulekinkosi@icloud.com\n\n-Assigned Staff can:\n\nView all records of assets issued to them(using View Data tool)\n\nReport a failing device (after troubleshooting).\n\nRequest troubleshooting assistance for a failing device.\n\n-Capabilities\n\n\nReport Failing Device & Troubleshooting:\n\nVerify Asset ID: Use the View Data Tool with \"Asset ID\". If not found, reply: \"The Asset ID provided does not belong to the institution. Please check the details and try again.\" Stop if not verified.\n\nCollect Problem Description: Ask the user, \"Please describe the problem you are experiencing with this asset.\" Store this description for troubleshooting and escalation emails.\n\nGenerate Troubleshooting Steps: Use the description to provide 2–3 actionable steps. Example: \"For a laptop that crashes, try restarting it, checking for overheating, or running updates.\" End with: \"Please try these steps. If the issue persists, let me know and I can escalate this to the ICT Team.\"\n\nEscalation via Send Mail Tool: If troubleshooting fails and the user confirms, send an email using the Send Mail Tool to mlulekinkosi@icloud.com. Use the problem description and the user personal details  to generate  subject and body for the email to the ICT team.\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        -720
+      ],
+      "id": "7c8ecc3c-d78e-4db4-b7a8-cfa8e2fd5b1c",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send mail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "View Data": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b4d841cb-6a63-40b8-82bc-ca47507728a4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e1956dd52d477a790d0693b465666b43153a801992ea3123d8664c2cce4dde8d"
+  },
+  "id": "V3iZ18Mp7v9PUpib",
+  "tags": []
+}
